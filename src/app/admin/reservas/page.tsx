@@ -14,7 +14,7 @@ type Reservation = {
   participants: {
     full_name: string;
     phone: string;
-  } | null;
+  }[] | null;
   reservation_numbers: {
     number: number;
   }[];
@@ -429,6 +429,7 @@ export default function ReservasPage() {
 
             <div className="space-y-4">
               {filtered.map((reservation) => {
+                const participant = reservation.participants?.[0] ?? null;
                 const canReview = [
                   "pending",
                   "expired_review",
@@ -451,7 +452,7 @@ export default function ReservasPage() {
                   >
                     <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                       <h2 className="text-lg font-bold">
-                        {reservation.participants?.full_name ??
+                        {participant?.full_name ??
                           "Participante não identificado"}
                       </h2>
 
@@ -475,7 +476,7 @@ export default function ReservasPage() {
 
                     <p className="mb-1 text-sm">
                       Telefone:{" "}
-                      {reservation.participants?.phone ?? "—"}
+                      {participant?.phone ?? "—"}
                     </p>
 
                     <p className="mb-2 text-sm">
