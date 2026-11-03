@@ -2,6 +2,10 @@
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 
+// O painel depende da sessão do administrador (cookies), portanto deve
+// aguardar a requisição em vez de tentar ser pré-renderizado no build.
+export const instant = false;
+
 export default async function AdminLayout({
   children,
 }: {
