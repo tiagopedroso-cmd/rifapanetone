@@ -11,13 +11,9 @@ type Reservation = {
   total_cents: number;
   created_at: string;
   expires_at: string;
-  participant: {
-    full_name: string;
-    phone: string;
-  }[] | null;
-  reservation_numbers: {
-    number: number;
-  }[];
+  full_name: string | null;
+  phone: string | null;
+  numbers: number[];
 };
 
 const campaigns = [
@@ -87,24 +83,9 @@ export default function ReservasPage() {
     setError("");
 
     try {
-      const { data, error: queryError } = await supabase
-        .from("reservations")
-        .select(`
-          id,
-          campaign_id,
-          status,
-          total_cents,
-          created_at,
-          expires_at,
-          participant:participants!reservations_participant_id_fkey (
-            full_name,
-            phone
-          ),
-          reservation_numbers (
-            number
-          )
-        `)
-        .order("created_at", { ascending: false });
+      const { data, error: queryError } = await supabase.rpc(
+        "admin_list_reservations"
+      );
 
       if (queryError) {
         setError(queryError.message);
@@ -429,17 +410,14 @@ export default function ReservasPage() {
 
             <div className="space-y-4">
               {filtered.map((reservation) => {
-                const participant = reservation.participant?.[0] ?? null;
                 const canReview = [
                   "pending",
                   "expired_review",
                 ].includes(reservation.status);
 
-                const sortedNumbers = [
-                  ...(reservation.reservation_numbers ?? []),
-                ]
-                  .map((item) => item.number)
-                  .sort((a, b) => a - b);
+                const sortedNumbers = [...(reservation.numbers ?? [])].sort(
+                  (a, b) => a - b
+                );
 
                 const isExpired =
                   new Date(reservation.expires_at).getTime() <=
@@ -452,7 +430,7 @@ export default function ReservasPage() {
                   >
                     <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                       <h2 className="text-lg font-bold">
-                        {participant?.full_name ??
+                        {reservation.full_name ??
                           "Participante não identificado"}
                       </h2>
 
@@ -476,7 +454,7 @@ export default function ReservasPage() {
 
                     <p className="mb-1 text-sm">
                       Telefone:{" "}
-                      {participant?.phone ?? "—"}
+                      {reservation.phone ?? "—"}
                     </p>
 
                     <p className="mb-2 text-sm">
