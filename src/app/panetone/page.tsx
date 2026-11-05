@@ -46,7 +46,7 @@ export default function PanetonePage() {
   async function reserve(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault(); const digits = phone.replace(/\D/g, ""); if (!campaign || name.trim().length < 3 || digits.length < 10) return;
     setReserving(true); const { data, error: rpcError } = await supabase.rpc("sim_create_reservation", { p_campaign_id: campaign.id, p_full_name: name.trim(), p_phone: digits, p_numbers: selected }); setReserving(false);
-    if (rpcError) { setError(/ocupad|indispon|reservad|bloquead|conflit|duplicate|unique/i.test(rpcError.message) ? "Um dos números acabou de ser reservado. Escolha outro número." : `Não foi possível criar a reserva: ${rpcError.message}`); setModal(null); void load(); return; }
+    if (rpcError) { const unavailable = /ocupad|indispon|reservad|bloquead|conflit|duplicate|unique/i.test(rpcError.message); const permission = /permission denied/i.test(rpcError.message); setError(unavailable ? "Um dos números acabou de ser reservado. Escolha outro número." : permission ? "O pagamento está temporariamente indisponível. Tente novamente em instantes." : `Não foi possível criar a reserva: ${rpcError.message}`); setModal(null); void load(); return; }
     const id = String(data);
     setReservationId(id);
     setQrCode(await QRCode.toDataURL(pixPayload(total, id, pixDescription), { margin: 1, width: 320, color: { dark: "#1b0903", light: "#fff8ee" } }));
