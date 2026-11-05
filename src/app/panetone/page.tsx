@@ -45,7 +45,7 @@ export default function PanetonePage() {
   function toggle(number: number) { if (!numbers.find((x) => x.number === number)?.available || reserving) return; setSelected((old) => old.includes(number) ? old.filter((n) => n !== number) : [...old, number].sort((a, b) => a - b)); }
   async function reserve(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault(); const digits = phone.replace(/\D/g, ""); if (!campaign || name.trim().length < 3 || digits.length < 10) return;
-    setReserving(true); const { data, error: rpcError } = await supabase.rpc("sim_create_reservation", { p_campaign_id: campaign.id, p_full_name: name.trim(), p_phone: digits, p_numbers: selected }); setReserving(false);
+    setReserving(true); const { data, error: rpcError } = await supabase.rpc("public_create_reservation", { p_campaign_id: campaign.id, p_full_name: name.trim(), p_phone: digits, p_numbers: selected }); setReserving(false);
     if (rpcError) { const unavailable = /ocupad|indispon|reservad|bloquead|conflit|duplicate|unique/i.test(rpcError.message); const permission = /permission denied/i.test(rpcError.message); setError(unavailable ? "Um dos números acabou de ser reservado. Escolha outro número." : permission ? "O pagamento está temporariamente indisponível. Tente novamente em instantes." : `Não foi possível criar a reserva: ${rpcError.message}`); setModal(null); void load(); return; }
     const id = String(data);
     setReservationId(id);
