@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 const campaigns = [
-  { eyebrow: "CAMPANHA 01", title: "2 TORTAS", detail: "1 torta de limão + 1 Banoffee", icon: "🍋", color: "from-[#fff3c8] via-[#fff9eb] to-[#e3f5d2]", accent: "text-[#759841]" },
+  { eyebrow: "CAMPANHA 01", title: "2 TORTAS", detail: "1 torta de limão + 1 Banoffee", icon: "🍋", color: "from-[#fff3c8] via-[#fff9eb] to-[#e3f5d2]", accent: "text-[#759841]", href: "/tortas" },
   { eyebrow: "CAMPANHA 02", title: "PANETONE", detail: "Panetone trufado", icon: "🍫", color: "from-[#f4ddc4] via-[#fff5ec] to-[#e8c69b]", accent: "text-[#8c4e24]", href: "/panetone" },
 ];
 
