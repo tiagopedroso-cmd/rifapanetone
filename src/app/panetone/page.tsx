@@ -30,7 +30,7 @@ export default function PanetonePage() {
   const load = useCallback(async () => {
     setLoading(true);
     const { data, error: campaignError } = await supabase.rpc("public_campaigns");
-    const found = ((data ?? []) as Campaign[]).find((item) => item.slug === "masculina");
+    const found = ((data ?? []) as Campaign[]).find((item) => item.slug === "panetone");
     if (campaignError || !found) { setError("A campanha vinculada ao Panetone ainda não está disponível."); setLoading(false); return; }
     const { data: numberData, error: numberError } = await supabase.rpc("public_campaign_numbers", { p_campaign_id: found.id });
     if (numberError) setError("Não foi possível carregar os números disponíveis.");
@@ -39,7 +39,7 @@ export default function PanetonePage() {
   }, []);
   useEffect(() => { const timer = window.setTimeout(() => void load(), 0); return () => window.clearTimeout(timer); }, [load]);
   const total = useMemo(() => selected.length * (selected.length === 1 ? (campaign?.price_single_cents ?? 2000) : (campaign?.price_multi_cents ?? 1500)), [campaign, selected]);
-  const description = `${name};${phone};${selected.map((n) => String(n).padStart(2, "0")).join(";")}`;
+  const description = `${name} - ${phone} | Números ${selected.map((n) => String(n).padStart(2, "0")).join("; ")}`;
   const pixDescription = description.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
   function toggle(number: number) { if (!numbers.find((x) => x.number === number)?.available || reserving) return; setSelected((old) => old.includes(number) ? old.filter((n) => n !== number) : [...old, number].sort((a, b) => a - b)); }

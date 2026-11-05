@@ -23,11 +23,11 @@ type Reservation = {
 const campaigns = [
   {
     id: "ca4fcc0f-32b3-48a9-a5c2-7036c6e9138e",
-    name: "Feminina",
+    name: "Torta",
   },
   {
     id: "5d1dc89d-8836-4ba2-9116-ac7ad300c6d6",
-    name: "Masculina",
+    name: "Panetone",
   },
 ];
 
