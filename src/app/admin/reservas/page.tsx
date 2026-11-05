@@ -11,7 +11,7 @@ type Reservation = {
   total_cents: number;
   created_at: string;
   expires_at: string;
-  participants: {
+  participant: {
     full_name: string;
     phone: string;
   }[] | null;
@@ -96,7 +96,7 @@ export default function ReservasPage() {
           total_cents,
           created_at,
           expires_at,
-          participants (
+          participant:participants!reservations_participant_id_fkey (
             full_name,
             phone
           ),
@@ -429,7 +429,7 @@ export default function ReservasPage() {
 
             <div className="space-y-4">
               {filtered.map((reservation) => {
-                const participant = reservation.participants?.[0] ?? null;
+                const participant = reservation.participant?.[0] ?? null;
                 const canReview = [
                   "pending",
                   "expired_review",
