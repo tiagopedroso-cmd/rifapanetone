@@ -13,7 +13,9 @@ const PIX_KEY = "+5511960764543";
 const PIX_DISPLAY = "11960764543";
 const field = (id: string, value: string) => `${id}${String(value.length).padStart(2, "0")}${value}`;
 function pixPayload(cents: number, id: string, description: string) {
-  const account = field("00", "br.gov.bcb.pix") + field("01", PIX_KEY) + field("02", description.slice(0, 72));
+  // O template 26 do BR Code aceita no máximo 99 caracteres. Com GUI e chave
+  // de telefone, a descrição pode ocupar no máximo 59 sem invalidar o TLV.
+  const account = field("00", "br.gov.bcb.pix") + field("01", PIX_KEY) + field("02", description.slice(0, 59));
   const raw = [field("00", "01"), field("26", account), field("52", "0000"), field("53", "986"), field("54", (cents / 100).toFixed(2)), field("58", "BR"), field("59", "MEGA RIFA"), field("60", "SAO PAULO"), field("62", field("05", `RIFA${id.replace(/-/g, "").slice(0, 20)}`.slice(0, 25))), "6304"].join("");
   let crc = 0xffff;
   for (let i = 0; i < raw.length; i += 1) { crc ^= raw.charCodeAt(i) << 8; for (let bit = 0; bit < 8; bit += 1) crc = crc & 0x8000 ? (crc << 1) ^ 0x1021 : crc << 1; }
